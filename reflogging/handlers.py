@@ -8,6 +8,7 @@ from zlib import compress
 from cjson import encode
 from reflogging import root_logger
 import os
+import syslog
 
 _logging2syslog = {10: 7, 20: 6, 30: 4, 40: 3, 50: 2}
 _logging2char = {10: 'D', 20: 'I', 30: 'W', 40: 'E', 50: 'C'}
@@ -112,3 +113,22 @@ class ColorStreamHandler(BaseHandler):
             ('\\\n    ' if '\n' in message else '') + message.replace('\n', '\n    ')
         ))
         self._stream.flush()
+
+class SyslogHandler(BaseHandler):
+
+    def __init__(self, ident, logoption, facility=syslog.LOG_USER):
+        syslog.openlog(ident, logoption, facility)
+
+
+    def record(self, severity, name, refs, format, *a, **kw):
+        message = format % a if a else format
+        refstring = "".join(["<%s %s>" % (n, v) for n, v in refs])
+        for line in message.split('\n'):
+            syslog.syslog(
+                _logging2syslog[severity],
+                "%s [%s] %s" % (
+                    name,
+                    refstring,
+                    line
+                )
+            )
