@@ -3,12 +3,9 @@
 
 import sys
 from distutils.core import setup
-sys.path.append('../common')
-from setup_ext.test import TestCommand
 
 setup(
     name = 'reflogging',
-    version = '1.0.0',
-    packages = ['reflogging'],
-    cmdclass = {'test': TestCommand}
+    version = '2.0.0',
+    packages = ['reflogging']
 )

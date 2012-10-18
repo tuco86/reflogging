@@ -1,14 +1,21 @@
-Source: poker-reflogging
+Source: reflogging
 Section: python
 Priority: optional
 Maintainer: Hannes <hannes@pokermania.de>
-Build-Depends: debhelper, python-all (>= 2.6.6)
-Standards-Version: 3.9.1
-Homepage: http://github.com/pokermania/poker-network
+X-Python-Version: >= 2.6, << 3.0
+Build-Depends:
+    debhelper,
+    python-all
+Standards-Version: 3.8.3
+Homepage: http://github.com/tuco86/reflogging
 
-Package: python-poker-reflogging
+Package: python-reflogging
 Section: python
 Architecture: all
-Depends: ${misc:Depends}, python-all (>= 2.6.6)
+Provides: ${python:Provides}
+Depends:
+    ${misc:Depends},
+    ${python:Depends},
+    python-cjson
 Description: the reflogger
- this is a package for one single python file..
+ logging with references
