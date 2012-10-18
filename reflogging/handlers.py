@@ -117,6 +117,7 @@ class ColorStreamHandler(BaseHandler):
 class SyslogHandler(BaseHandler):
 
     def __init__(self, ident, logoption, facility=syslog.LOG_USER):
+        BaseHandler.__init__(self)
         syslog.openlog(ident, logoption, facility)
 
 
