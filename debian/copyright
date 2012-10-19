@@ -1,5 +1,5 @@
 Format: http://dep.debian.net/deps/dep5
-Upstream-Name: python-poker-reflogging
+Upstream-Name: python-reflogging
 
 Files: *
 Copyright: 2012 Hannes <hannes@pokermania.de>
