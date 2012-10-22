@@ -10,6 +10,8 @@ Standards-Version: 3.8.3
 Homepage: http://github.com/tuco86/reflogging
 
 Package: python-reflogging
+Conflicts: python-poker-reflogging
+Replaces: python-poker-reflogging
 Section: python
 Architecture: all
 Provides: ${python:Provides}
