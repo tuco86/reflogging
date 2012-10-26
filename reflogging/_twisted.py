@@ -34,11 +34,13 @@ class RefloggingObserver:
                 return
             if self._traceback and not a['message'][0].startswith(' '):
                 self._traceback.append(a)
-                root_logger.log(40, a.get('system', '-'), [], "\n".join([trace['message'][0] for trace in self._traceback]), printed=1, unhandled=1)
+                if root_logger._log_level <= 40:
+                    root_logger.log(40, a.get('system', '-'), [], "\n".join([trace['message'][0] for trace in self._traceback]), printed=1, unhandled=1)
                 self._traceback = []
                 return
             if self._traceback:
                 self._traceback.append(a)
                 return
-        root_logger.log(20, a.get('system', '-'), [], a['message'][0], printed=1)
+        if root_logger._log_level <= 20:
+            root_logger.log(20, a.get('system', '-'), [], a['message'][0], printed=1)
 
