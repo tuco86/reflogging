@@ -11,6 +11,7 @@ def singleton(cls):
 class RootLogger():
 
     def __init__(self):
+        self._app_name = None
         self._log_level = 30
         self._handlers = []
 
@@ -18,6 +19,9 @@ class RootLogger():
         assert level in (10, 20, 30, 40, 50),\
             'Level(%s) has to be in (10, 20, 30, 40, 50)' % (level,)
         self._log_level = level
+
+    def set_app_name(self, name):
+        self._app_name = name
 
     def add_handler(self, handler):
         self._handlers.append(handler)

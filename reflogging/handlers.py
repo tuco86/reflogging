@@ -34,12 +34,12 @@ class GELFHandler(BaseHandler):
         BaseHandler.__init__(self)
         self.deactivated = False
         self._record_pipe, process_pipe = Pipe(True)
-        self._process = Process(target=self._run, args=(process_pipe, host, port), name='GELFHandler')
+        self._process = Process(target=self._run, args=(process_pipe, host, port, root_logger._app_name), name='GELFHandler')
         self._process.daemonhtop = True
         self._process.start()
         atexit.register(self._record_pipe.send, -1)
 
-    def _run(self, pipe, host, port):
+    def _run(self, pipe, host, port, app):
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         _socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         _socket.connect((host, port))
@@ -52,7 +52,8 @@ class GELFHandler(BaseHandler):
                 'full_message': message,
                 'timestamp': time,
                 'level': _logging2syslog[severity],
-                'facility': name
+                'facility': app,
+                '_name': name
             }
             for k, v in kw.iteritems():
                 fields['_'+k] = v
