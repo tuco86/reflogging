@@ -5,7 +5,6 @@ from loggers import RootLogger
 root_logger = RootLogger()
 
 import sys
-import traceback
 
 orig_stdout = sys.stdout
 
@@ -29,31 +28,27 @@ class RefloggingObserver:
         self._traceback = []
 
     def __call__(self, a):
-        # if we catched an error, do some trickery if it is a multiline message
-        # or directly print the generated traceback from the failure object, if existing
-        if a.get('isError'):
-            message = a['message'] and a['message'][0]
-            print_it = False
-            if message and message.startswith('Traceback'):
-                self._traceback = [message]
-            elif self._traceback and (message and message.startswith(' ')):
-                self._traceback.append(message)
-            elif 'failure' in a:
-                print_it = True
-                failure_traceback = a['failure'].getTracebackObject()
-                self._traceback = \
-                    traceback.format_list(traceback.extract_tb(failure_traceback)) \
-                    if failure_traceback else ['Unknown Error']
-            else:
-                print_it = True
-                self._traceback.append(message)
-            if print_it:
-                if root_logger._log_level <= 40:
-                    traceback_message = "\n".join(msg for msg in self._traceback)
-                    root_logger.log(40, a.get('system', '-'), [], "%s", traceback_message, printed=1, unhandled=1)
-                self._traceback = []
-        # if there was a print statement, forward it on INFO
-        elif root_logger._log_level <= 20:
-            message = a['message'] and a['message'][0]
-            root_logger.log(20, a.get('system', '-'), [], "%s", message, printed=1)
-    
+        isError = a.get('isError')
+        printed = a.get('printed')
+        failure = a.get('failure')
+
+        if isError:
+            if failure:
+                root_logger.log(40, a.get('system', '-'), [], failure.getTraceback()[:-1], printed=1, unhandled=1)
+                return
+            if printed:
+                if a['message'][0].startswith('Traceback'):
+                    self._traceback.append(a)
+                    return
+                if self._traceback and not a['message'][0].startswith(' '):
+                    self._traceback.append(a)
+                    if root_logger._log_level <= 40:
+                        root_logger.log(40, a.get('system', '-'), [], "\n".join([trace['message'][0] for trace in self._traceback]), printed=1, unhandled=1)
+                    self._traceback = []
+                    return
+                if self._traceback:
+                    self._traceback.append(a)
+                    return
+        if root_logger._log_level <= 20:
+            root_logger.log(20, a.get('system', '-'), [], a['message'][0], printed=1)
+
