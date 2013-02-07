@@ -104,7 +104,8 @@ class ColorStreamHandler(BaseHandler):
         format = format \
             .replace("%s", "\033[33m%s\033[0m") \
             .replace("%d", "\033[31m%d\033[0m") \
-            .replace("%f", "\033[31m%f\033[0m")
+            .replace("%f", "\033[31m%f\033[0m") \
+            .replace("%x", "\033[36m%x\033[0m")
         message = format % a if a else format
         self._stream.write("\033[30m%s %s\033[0m\033[30m %s [%s]\033[0m %s\n" % (
             time.strftime("%H:%M:%S"),
