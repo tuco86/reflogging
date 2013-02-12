@@ -69,6 +69,7 @@ class GELFHandler(BaseHandler):
         for n, v in refs:
             kw[n] = v
         try:
+            a = [i() if callable(i) else i for i in a]
             self._record_pipe.send((time.time(), severity, name, format % a if a else format, kw))
         except IOError, e:
             self._record_pipe.close()
