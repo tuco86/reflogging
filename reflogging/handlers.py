@@ -69,7 +69,7 @@ class GELFHandler(BaseHandler):
         for n, v in refs:
             kw[n] = v
         try:
-            a = [i() if callable(i) else i for i in a]
+            a = tuple(i() if callable(i) else i for i in a)
             self._record_pipe.send((time.time(), severity, name, format % a if a else format, kw))
         except IOError, e:
             self._record_pipe.close()
@@ -107,6 +107,7 @@ class ColorStreamHandler(BaseHandler):
             .replace("%d", "\033[31m%d\033[0m") \
             .replace("%f", "\033[31m%f\033[0m") \
             .replace("%x", "\033[36m%x\033[0m")
+        a = tuple(i() if callable(i) else i for i in a)
         message = format % a if a else format
         self._stream.write("\033[30m%s %s\033[0m\033[30m %s [%s]\033[0m %s\n" % (
             time.strftime("%H:%M:%S"),
@@ -125,6 +126,7 @@ class SyslogHandler(BaseHandler):
 
 
     def record(self, severity, name, refs, format, *a, **kw):
+        a = tuple(i() if callable(i) else i for i in a)
         message = format % a if a else format
         refstring = "".join(["<%s %s>" % (n, v) for n, v in refs])
         for line in message.split('\n'):
