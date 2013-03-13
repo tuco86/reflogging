@@ -96,11 +96,7 @@ class StreamHandler(BaseHandler):
         ))
         self._stream.flush()
 
-class ColorStreamHandler(BaseHandler):
-
-    def __init__(self, stream):
-        BaseHandler.__init__(self)
-        self._stream = stream
+class ColorStreamHandler(StreamHandler):
 
     def record(self, severity, name, refs, format, *a, **kw):
         format = format \
