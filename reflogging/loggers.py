@@ -31,7 +31,7 @@ class RootLogger():
 
     def log(self, severity, name, refs, format, *a, **kw):
         executed_refs = [(n, l(i)) for n, i, l in refs]
-        executed_refs = [(n, v) for n, v in executed_refs if v != None]
+        executed_refs = [(n, v) for n, v in executed_refs if v is not None]
         for handler in self._handlers:
             if severity >= handler._log_level:
                 handler.record(severity, name, executed_refs, format, *a, **kw)
