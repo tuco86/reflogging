@@ -61,7 +61,7 @@ class GELFHandler(BaseHandler):
             try:
                 _socket.send(raw)
             except socket.error, e:
-                print >> stdout, 'socket errror:', str(e)
+                print >> stdout, 'socket error:', str(e)
 
     def record(self, severity, name, refs, format, *a, **kw):
         if self.deactivated:
