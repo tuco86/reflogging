@@ -101,6 +101,7 @@ class ColorStreamHandler(StreamHandler):
     def record(self, severity, name, refs, format, *a, **kw):
         format = format \
             .replace("%s", "\033[33m%s\033[0m") \
+            .replace("%r", "\033[33m%r\033[0m") \
             .replace("%d", "\033[31m%d\033[0m") \
             .replace("%f", "\033[31m%f\033[0m") \
             .replace("%x", "\033[36m%x\033[0m")
