@@ -79,7 +79,7 @@ class InstanceLogger():
     def __init__(self, name, instance, refs=None):
         self._name = name
         self._instance = instance
-        self._refs = refs
+        self._refs = refs if refs else []
 
     def add_ref(self, name, instance, func):
         self._refs.append((name, instance, func))
