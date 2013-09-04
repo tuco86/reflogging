@@ -43,7 +43,7 @@ class Logger():
     def __init__(self, name):
         self._name = name
 
-    def get_instance(self, instance, refs=[]):
+    def get_instance(self, instance, refs=None):
         return InstanceLogger(self._name, instance, refs)
 
     def get_child(self, name):
