@@ -88,7 +88,7 @@ class StreamHandler(BaseHandler):
         a = tuple(i() if callable(i) else i for i in a)
         message = format % a if a else format
         self._stream.write("%s %s %s [%s] %s\n" % (
-            time.strftime("%H:%M:%S"),
+            time.strftime("%d.%m %H:%M:%S"),
             _logging2char[severity],
             name,
             "".join(["<%s %s>" % (n, v) for n, v in refs]),
