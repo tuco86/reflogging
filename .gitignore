@@ -5,3 +5,4 @@
 /debian/*.debhelper.log
 /debian/*.substvars
 /debian/python-reflogging/
+/reflogging.egg-info/
