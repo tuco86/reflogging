@@ -109,7 +109,7 @@ class ColorStreamHandler(StreamHandler):
         a = tuple(i() if callable(i) else i for i in a)
         message = format % a if a else format
         self._stream.write("\033[30m%s %s\033[0m\033[30m %s [%s]\033[0m %s\n" % (
-            time.strftime("%H:%M:%S"),
+            time.strftime("%d.%m %H:%M:%S"),
             ['\033[36m', '\033[32m', '\033[33m', '\033[31m', '\033[0;30m\033[41m'][severity/10-1] + _logging2char[severity],
             name,
             "".join(["<\033[33m%s\033[0m \033[31m%s\033[30m>" % (n, v) for n, v in refs if v]),
