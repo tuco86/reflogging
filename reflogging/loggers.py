@@ -52,27 +52,27 @@ class Logger():
     def debug(self, format, *a, **kw):
         """DEBUG: Info useful to developers for debugging the application, not useful during operations"""
         if root_logger._log_level <= 10:
-            root_logger.log(10, self._name, kw.pop('refs') if 'refs' in kw else [], format, *a, **kw)
+            root_logger.log(10, self._name, kw.pop('refs', []), format, *a, **kw)
 
     def inform(self, format, *a, **kw):
         """INFORMATIONAL: Normal operational messages - may be harvested for reporting, measuring throughput, etc - no action required"""
         if root_logger._log_level <= 20:
-            root_logger.log(20, self._name, kw.pop('refs') if 'refs' in kw else [], format, *a, **kw)
+            root_logger.log(20, self._name, kw.pop('refs', []), format, *a, **kw)
 
     def warn(self, format, *a, **kw):
         """WARNING: Warning messages - not an error, but indication that an error will occur if action is not taken, e.g. file system 85% full - each item must be resolved within a given time"""
         if root_logger._log_level <= 30:
-            root_logger.log(30, self._name, kw.pop('refs') if 'refs' in kw else [], format, *a, **kw)
+            root_logger.log(30, self._name, kw.pop('refs', []), format, *a, **kw)
 
     def error(self, format, *a, **kw):
         """ERROR: Non-urgent failures - these should be relayed to developers or admins; each item must be resolved within a given time"""
         if root_logger._log_level <= 40:
-            root_logger.log(40, self._name, kw.pop('refs') if 'refs' in kw else [], format, *a, **kw)
+            root_logger.log(40, self._name, kw.pop('refs', []), format, *a, **kw)
 
     def crit(self, format, *a, **kw):
         """CRITICAL: Should be corrected immediately, but indicates failure in a primary system - fix CRITICAL problems before ALERT - example is loss of primary ISP connection"""
         if root_logger._log_level <= 50:
-            root_logger.log(50, self._name, kw.pop('refs') if 'refs' in kw else [], format, *a, **kw)
+            root_logger.log(50, self._name, kw.pop('refs', []), format, *a, **kw)
 
 class InstanceLogger():
 
