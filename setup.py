@@ -8,5 +8,4 @@ setup(
     name = 'reflogging',
     version = '2.0.0',
     packages = ['reflogging'],
-    install_requires = ['python-cjson']
 )

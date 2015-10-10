@@ -5,7 +5,7 @@ import socket
 import signal
 from multiprocessing import Process, Pipe
 from zlib import compress
-from cjson import encode
+from json import dumps
 from reflogging import root_logger
 import os
 import syslog
@@ -57,7 +57,7 @@ class GELFHandler(BaseHandler):
             }
             for k, v in kw.iteritems():
                 fields['_'+k] = v
-            raw = compress(encode(fields))
+            raw = compress(dumps(fields))
             try:
                 _socket.send(raw)
             except socket.error, e:
