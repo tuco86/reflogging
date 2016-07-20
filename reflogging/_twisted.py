@@ -1,12 +1,13 @@
 
-from handlers import BaseHandler, _logging2syslog
-from loggers import RootLogger
+from .handlers import BaseHandler, _logging2syslog
+from .loggers import RootLogger
 
 root_logger = RootLogger()
 
 import sys
 
 orig_stdout = sys.stdout
+
 
 class TwistedHandler(BaseHandler):
 
@@ -21,6 +22,7 @@ class TwistedHandler(BaseHandler):
                 system=name,
                 syslogPriority=_logging2syslog[severity]
             )
+
 
 class RefloggingObserver:
 
@@ -51,4 +53,3 @@ class RefloggingObserver:
                     return
         if root_logger._log_level <= 20:
             root_logger.log(20, a.get('system', '-'), [], a['message'][0], printed=1)
-

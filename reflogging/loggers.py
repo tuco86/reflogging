@@ -1,11 +1,13 @@
 
 def singleton(cls):
     instances = {}
+
     def getinstance():
         if cls not in instances:
             instances[cls] = cls()
         return instances[cls]
     return getinstance
+
 
 @singleton
 class RootLogger():
@@ -37,6 +39,7 @@ class RootLogger():
                 handler.record(severity, name, executed_refs, format, *a, **kw)
 
 root_logger = RootLogger()
+
 
 class Logger():
 
@@ -73,6 +76,7 @@ class Logger():
         """CRITICAL: Should be corrected immediately, but indicates failure in a primary system - fix CRITICAL problems before ALERT - example is loss of primary ISP connection"""
         if root_logger._log_level <= 50:
             root_logger.log(50, self._name, kw.pop('refs', []), format, *a, **kw)
+
 
 class InstanceLogger():
 

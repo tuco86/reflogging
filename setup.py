@@ -5,7 +5,7 @@ import sys
 from distutils.core import setup
 
 setup(
-    name = 'reflogging',
-    version = '2.0.0',
-    packages = ['reflogging'],
+    name='reflogging',
+    version='2.0.0',
+    packages=['reflogging'],
 )

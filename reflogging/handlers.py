@@ -9,9 +9,11 @@ from json import dumps
 from reflogging import root_logger
 import os
 import syslog
+import collections
 
 _logging2syslog = {10: 7, 20: 6, 30: 4, 40: 3, 50: 2}
 _logging2char = {10: 'D', 20: 'I', 30: 'W', 40: 'E', 50: 'C'}
+
 
 class BaseHandler():
 
@@ -27,6 +29,7 @@ class BaseHandler():
         raise NotImplementedError
 
 from sys import stdout
+
 
 class GELFHandler(BaseHandler):
 
@@ -55,13 +58,13 @@ class GELFHandler(BaseHandler):
                 'facility': app,
                 '_name': name
             }
-            for k, v in kw.iteritems():
-                fields['_'+k] = v
+            for k, v in kw.items():
+                fields['_' + k] = v
             raw = compress(dumps(fields))
             try:
                 _socket.send(raw)
-            except socket.error, e:
-                print >> stdout, 'socket error:', str(e)
+            except socket.error as e:
+                print('socket error:', str(e), file=stdout)
 
     def record(self, severity, name, refs, format, *a, **kw):
         if self.deactivated:
@@ -69,13 +72,12 @@ class GELFHandler(BaseHandler):
         for n, v in refs:
             kw[n] = v
         try:
-            a = tuple(i() if callable(i) else i for i in a)
+            a = tuple(i() if isinstance(i, collections.Callable) else i for i in a)
             self._record_pipe.send((time.time(), severity, name, format % a if a else format, kw))
-        except IOError, e:
+        except IOError as e:
             self._record_pipe.close()
             self.deactivated = True
             root_logger.log(50, 'reflogging.handlers.GELFHandler', [], 'GELFHandler\'s record_pipe went down: %s' % (str(e),))
-
 
 
 class StreamHandler(BaseHandler):
@@ -85,7 +87,7 @@ class StreamHandler(BaseHandler):
         self._stream = stream
 
     def record(self, severity, name, refs, format, *a, **kw):
-        a = tuple(i() if callable(i) else i for i in a)
+        a = tuple(i() if isinstance(i, collections.Callable) else i for i in a)
         message = format % a if a else format
         self._stream.write("%s %s %s [%s] %s\n" % (
             time.strftime("%d.%m %H:%M:%S"),
@@ -95,6 +97,7 @@ class StreamHandler(BaseHandler):
             message.replace('\n', '\n    ')
         ))
         self._stream.flush()
+
 
 class ColorStreamHandler(StreamHandler):
 
@@ -106,16 +109,17 @@ class ColorStreamHandler(StreamHandler):
             .replace("%f", "\033[31m%f\033[0m") \
             .replace("%g", "\033[31m%g\033[0m") \
             .replace("%x", "\033[36m%x\033[0m")
-        a = tuple(i() if callable(i) else i for i in a)
+        a = tuple(i() if isinstance(i, collections.Callable) else i for i in a)
         message = format % a if a else format
         self._stream.write("\033[30m%s %s\033[0m\033[30m %s [%s]\033[0m %s\n" % (
             time.strftime("%d.%m %H:%M:%S"),
-            ['\033[36m', '\033[32m', '\033[33m', '\033[31m', '\033[0;30m\033[41m'][severity/10-1] + _logging2char[severity],
+            ['\033[36m', '\033[32m', '\033[33m', '\033[31m', '\033[0;30m\033[41m'][severity // 10 - 1] + _logging2char[severity],
             name,
             "".join(["<\033[33m%s\033[0m \033[31m%s\033[30m>" % (n, v) for n, v in refs if v]),
             ('\\\n    ' if '\n' in message else '') + message.replace('\n', '\n    ')
         ))
         self._stream.flush()
+
 
 class SyslogHandler(BaseHandler):
 
@@ -123,9 +127,8 @@ class SyslogHandler(BaseHandler):
         BaseHandler.__init__(self)
         syslog.openlog(ident, logoption, facility)
 
-
     def record(self, severity, name, refs, format, *a, **kw):
-        a = tuple(i() if callable(i) else i for i in a)
+        a = tuple(i() if isinstance(i, collections.Callable) else i for i in a)
         message = format % a if a else format
         refstring = "".join(["<%s %s>" % (n, v) for n, v in refs])
         for line in message.split('\n'):
