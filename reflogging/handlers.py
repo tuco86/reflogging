@@ -96,7 +96,7 @@ class StreamHandler(BaseHandler):
             "".join(["<%s %s>" % (n, v) for n, v in refs]),
             message.replace('\n', '\n    ')
         ))
-        self._stream.flush()
+        # self._stream.flush()
 
 
 class ColorStreamHandler(StreamHandler):
@@ -118,7 +118,7 @@ class ColorStreamHandler(StreamHandler):
             "".join(["<\033[33m%s\033[0m \033[31m%s\033[30m>" % (n, v) for n, v in refs if v]),
             ('\\\n    ' if '\n' in message else '') + message.replace('\n', '\n    ')
         ))
-        self._stream.flush()
+        # self._stream.flush()
 
 
 class SyslogHandler(BaseHandler):
